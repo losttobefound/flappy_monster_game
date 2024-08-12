@@ -1,14 +1,19 @@
+//Autor: Ivanna Haiduk
+//Date: 02-24-2024
+
+
+// OSC setup
 import netP5.*;
 import oscP5.*;
 
+// OSC Messages
 OscP5 osc = new OscP5(this, 1234);
 NetAddress meineAdresse = new NetAddress("127.0.0.1", 1234);
-OscMessage natureMessage = new OscMessage("nature");
 OscMessage buttonMessage = new OscMessage("button");
 OscMessage obstacle_hitMessage = new OscMessage("obstacle_hit");
 OscMessage spike_hitMessage = new OscMessage("spike_hit");
 OscMessage scoreMessage = new OscMessage("score");
-OscMessage monsterMessage = new OscMessage("monster");
+OscMessage monsterMessage = new OscMessage("jump");
 OscMessage gameoverMessage = new OscMessage("gameover");
 
 
@@ -32,6 +37,7 @@ PFont font;
 
 int gameState;
 
+// Objects
 Background background;
 Spike spike[];
 Bird bird;
@@ -47,15 +53,16 @@ void setup() {
   font = loadFont("./data/BerlinSansFB-Bold-48.vlw");
   button = new Button(button_play_path);
   button.setPos(button_x, button_y);
-  resetGame(false); // starts game again 
+  resetGame(false);
 }
 
-void resetGame(boolean start) {
+void resetGame(boolean start) { // reset game parameters and initialize objects
   score = 0;
   spike = new Spike[spike_number];
   for (int i = 0; i<spike_number; i++) {
     spike[i] = new Spike(i);
   }
+  
   bird = new Bird();
   flower = new Flower();
 
@@ -77,7 +84,7 @@ void draw() {
   background.drawingBackground();
  
   if (start_game) {
-    if (gameState == 0) {
+    if (gameState == 0) { // game starts
       
       background.actBackground();
 
@@ -97,7 +104,7 @@ void draw() {
         obstacle[i].animation();
         obstacle[i].act();
         
-        if (obstacle[i].hit(bird.bird_x, bird.bird_y, bird.image_width, bird.image_height)) {
+        if (obstacle[i].hit(bird.bird_x, bird.bird_y, bird.image_width, bird.image_height)) { // when bird hits the obstacle
           osc.send(obstacle_hitMessage, meineAdresse);
           osc.send(gameoverMessage, meineAdresse);
           gameState = 1;
@@ -112,13 +119,13 @@ void draw() {
         spike[i].drawing();
         spike[i].act();
         
-        if (spike[i].hit(bird.bird_x, bird.bird_y, bird.image_width, bird.image_height)) {
+        if (spike[i].hit(bird.bird_x, bird.bird_y, bird.image_width, bird.image_height)) { // when bird hits the spike
           osc.send(spike_hitMessage, meineAdresse);
           osc.send(gameoverMessage, meineAdresse);
           gameState = 1; 
-        } else if (spike[i].passedBird(bird.bird_x, bird.image_width)) {
+        } else if (spike[i].passedBird(bird.bird_x, bird.image_width)) { 
           osc.send(scoreMessage, meineAdresse);
-          score += 1;
+          score += 1; 
         }
       }
 
@@ -126,26 +133,25 @@ void draw() {
       bird.animation();
       background.actBottom();
 
-      if (bird.bird_y + bird.image_height + 10>= height || gameState == 1) { //the bird has reached the ground or collided with an obstacle/spike
+      if (bird.bird_y + bird.image_height + 10>= height || gameState == 1) { //when bird has reached the ground or collided with an obstacle/spike
         osc.send(gameoverMessage, meineAdresse);
         gameState = 1; //game state to game over
         start_game = false; // restart
       }
     }
   } else {
-    if (gameState == 1) {
+    if (gameState == 1) { // game is finished
       fill(255);
       textSize(32);
       textFont(font);
      
       text("Score: " + score, 40, 60);
-      button.newImage(button_playagain_path); // changed button
+      button.newImage(button_playagain_path); // changed button to play again
     }
     button.drawing();
     if (button.clicked()) {
       osc.send(buttonMessage, meineAdresse);
-      resetGame(true);
-      
+      resetGame(true);// game starts again
     }
   }
 

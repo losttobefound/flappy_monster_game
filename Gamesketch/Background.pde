@@ -22,19 +22,19 @@ class Background {
     backx -= 2;// speed
 
     if (backx <= -back.width) {
-      backx = 0; // resets once first image is done
+      backx = 0; // reset once first image is done
     }
   }
   void drawingBottom() {
     imageMode(CORNER);
     image(bottom, bottomx, bottomy);
-    image(bottom, bottomx + bottom.width, bottomy); // make a continious bottom to cover spikes
+    image(bottom, bottomx + bottom.width, bottomy); // make continious bottom to cover spikes
   }
   void actBottom() {
     bottomx -= 2;// speed
 
     if (bottomx <= -bottom.width) {
-      bottomx = 0; // resets once first image is done
+      bottomx = 0; // reset once first image is done
     }
   }
 }

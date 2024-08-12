@@ -48,7 +48,7 @@ class Bird {
     }
     if (mousePressed) {
       osc.send(monsterMessage, meineAdresse);
-      y_velocity = -jump; //jumps up when mouse pressed
+      y_velocity = -jump; // bird jumps up when mouse is pressed
     }
   }
 }

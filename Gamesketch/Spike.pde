@@ -37,7 +37,7 @@ class Spike{
     }
   }
   
-  boolean hit(float object_x, float object_y, float object_width, float object_height){
+  boolean hit(float object_x, float object_y, float object_width, float object_height){ 
     float bird_collision_width = object_width * 0.8;
     float bird_collision_height = object_height * 0.2;
 
